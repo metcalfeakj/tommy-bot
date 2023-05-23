@@ -1,0 +1,33 @@
+{
+  "name": "tommy-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/Bot.ts",
+  "scripts": {
+    "test": "ts-node src/tests/mongo.ts",
+    "start": "ts-node src/Bot.ts",
+    "dev": "nodemon src/Bot.ts",
+    "dev:debug": "nodemon --inspect src/Bot.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.0.1",
+    "mongodb": "^5.5.0",
+    "nodemon": "^2.0.22"
+  },
+  "devDependencies": {
+    "@types/node": "^20.2.1",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "*"
+  }
+}
