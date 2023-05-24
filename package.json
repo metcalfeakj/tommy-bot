@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/Bot.ts",
   "scripts": {
-    "test": "ts-node src/tests/mongo.ts",
+    "test": "ts-node src/tests/tommyDb.ts",
     "start": "ts-node src/Bot.ts",
     "dev": "nodemon src/Bot.ts",
     "dev:debug": "nodemon --inspect src/Bot.ts"
@@ -17,8 +17,11 @@
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.0.1",
+    "mariadb": "^3.1.2",
     "mongodb": "^5.5.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sequelize": "^6.31.1",
+    "sequelize-typescript": "^2.1.5"
   },
   "devDependencies": {
     "@types/node": "^20.2.1",
