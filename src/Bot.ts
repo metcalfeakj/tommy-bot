@@ -3,6 +3,13 @@ import { Client, Partials, GatewayIntentBits } from "discord.js";
 import ready from "./listeners/ready";
 import message from "./listeners/message";
 import interactionCreate from './listeners/interactionCreate';
+import connection from './database/Connection';
+import { MessageTable } from './database/models';
+import { checkLastRunTimeFile } from './lastRunTime';
+
+const lastModifiedDateTime = checkLastRunTimeFile();
+console.log(`Stored last modified datetime variable: ${lastModifiedDateTime}`);
+
 
 dotenv.config()
 
@@ -15,8 +22,10 @@ const client = new Client({
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
 });
 
+const database = connection;
+database.authenticate();
+database.sync();
 ready(client);
 interactionCreate(client);
-message(client);
-
+message(client,database, lastModifiedDateTime);
 client.login(discord_token);
