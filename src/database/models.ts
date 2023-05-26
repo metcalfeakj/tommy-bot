@@ -3,12 +3,15 @@ import { Table, Model, Column, DataType } from "sequelize-typescript";
 @Table({
   timestamps: true,
   tableName: "messages",
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
 })
 
 class MessageTable extends Model {
   @Column({
     type: DataType.STRING,
     allowNull: false,
+    
   })
   declare server_name: string;
 
@@ -25,8 +28,9 @@ class MessageTable extends Model {
   declare author: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
     allowNull: false,
+    
   })
   declare message: string;
 }
@@ -35,6 +39,8 @@ class MessageTable extends Model {
 @Table({
   timestamps: true,
   tableName: "cassette_tape",
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
 })
 class CassetteTapeTable extends Model {
 

@@ -5,7 +5,6 @@ import ready from "./listeners/ready";
 import message from "./listeners/message";
 import interactionCreate from './listeners/interactionCreate';
 import connection from './database/Connection';
-import { MessageTable } from './database/models';
 
 
 const lastModifiedDateTime = checkLastRunTimeFile();
