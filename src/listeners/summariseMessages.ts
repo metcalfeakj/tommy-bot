@@ -40,7 +40,7 @@ export const summariseMessages = async (database: Sequelize, limit: number, last
         if (chatHistory.length > (limit - 1)) {
             lastRunDate.setDate(executionDate.getDate());
             lastRunDate.setTime(executionDate.getTime());
-            fs.utimesSync('../.lastRunTime', lastRunDate, lastRunDate);
+            fs.utimesSync('./.lastRunTime', lastRunDate, lastRunDate);
             console.log(`summariseMessages: Updated .lastRunTime file with datetime: ${lastRunDate}`);
             const completionRequestMessages: ChatCompletionRequestMessage[] = chatHistory.map((chatMessage) => {
                 return {
@@ -52,7 +52,7 @@ export const summariseMessages = async (database: Sequelize, limit: number, last
             const record = {chat_history: JSON.stringify(chatHistory), summary: summary, model: 'gpt-3.5-turbo'}
             await database.getRepository(CassetteTapeTable).create(record);
             console.log('Recorded to cassette tape')
-            chatHistory.length = 0; ;;;
+            chatHistory.length = 0;
         }
     } catch (e) {
         console.log('error', e)
