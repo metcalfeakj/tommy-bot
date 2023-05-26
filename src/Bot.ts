@@ -1,3 +1,4 @@
+import { checkLastRunTimeFile } from './lastRunTime';
 import * as dotenv from 'dotenv'
 import { Client, Partials, GatewayIntentBits } from "discord.js";
 import ready from "./listeners/ready";
@@ -5,7 +6,7 @@ import message from "./listeners/message";
 import interactionCreate from './listeners/interactionCreate';
 import connection from './database/Connection';
 import { MessageTable } from './database/models';
-import { checkLastRunTimeFile } from './lastRunTime';
+
 
 const lastModifiedDateTime = checkLastRunTimeFile();
 console.log(`Stored last modified datetime variable: ${lastModifiedDateTime}`);
