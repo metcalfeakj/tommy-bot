@@ -15,7 +15,7 @@ const connection = new Sequelize({
   database: process.env.MARIADB_DATABASE,
   logging: false,
   models: [MessageTable, CassetteTapeTable],
-  sync: { force: true },
+  sync: { alter: true },
 });
 
 export default connection;

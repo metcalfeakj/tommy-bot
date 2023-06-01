@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/Bot.ts",
   "scripts": {
-    "test": "ts-node src/tests/tommyDb.ts",
+    "test": "ts-node src/run.ts",
     "start": "ts-node src/Bot.ts",
     "dev": "nodemon src/Bot.ts",
     "dev:debug": "nodemon --inspect src/Bot.ts"
