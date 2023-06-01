@@ -23,12 +23,14 @@ function formatDate(date: Date): string {
   
 
 dotenv.config();
-const startMessage:string = `🤖 Tommy Bot initialised at ${formatDate(lastRunExecutionDate)} 🕰️
-Model: ${process.env.MODEL} 
-Max Tokens: ${process.env.MAX_TOKENS} 🔢
-Temperature: ${process.env.TEMPERATURE} 🌡️
-Seed: ${process.env.SEED} 🌱
-Starting message: ${process.env.BEGIN} 🚀
+const startMessage:string = `Tommy Bot initialised at 🕰️ ${formatDate(lastRunExecutionDate)} 
+🤖 Model: ${process.env.MODEL} 
+🔢 Max Tokens: ${process.env.MAX_TOKENS} 
+🌡️ Temperature: ${process.env.TEMPERATURE} 
+🌱 Seed: ${process.env.SEED} 
+🚀 Starting message: 
+
+${process.env.BEGIN} 
 `
 
 
