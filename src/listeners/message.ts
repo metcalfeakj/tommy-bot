@@ -109,10 +109,11 @@ async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletion
 
     
     }catch(e){console.log(e)
-        await (client.channels.cache.get('1113746443480600676') as TextChannel).send("❌ ERROR - Resetting Message Buffer. Starting fresh.");}
+        await (client.channels.cache.get('1113746443480600676') as TextChannel).send("❌ ERROR - Resetting Message Buffer. Starting fresh.");}finally{
 
         chatBuffer.length = 0;
         halt = false;
+        }
     }
 }
 
