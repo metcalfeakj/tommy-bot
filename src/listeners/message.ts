@@ -1,7 +1,7 @@
 
 import { Client, Message, TextChannel } from "discord.js";
 import { Sequelize } from "sequelize-typescript";
-import { Configuration, OpenAIApi, ChatCompletionRequestMessage, ChatCompletionRequestMessageRoleEnum } from "openai";
+import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import * as dotenv from 'dotenv';
 import { upsertMessage } from '../handlers/upsertMessage';
 import ChatMessages from "./chatMessages";
@@ -13,7 +13,7 @@ const chatBuffer: ChatCompletionRequestMessage[] = []
 const openai = new OpenAIApi(new Configuration({
     apiKey: process.env.OPENAI_API_KEY
 }));
-const chat = new ChatMessages('system', `${process.env.SEED}`, 8000);
+const chat = new ChatMessages('system', `${process.env.SEED}`, 30000);
 // const records: Record[] = [];
 
 /* const getResponse = async (userInput: string) => {
@@ -105,6 +105,7 @@ async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletion
         const { choices } = response.data || { choices: [] };
         const generatedMessage = choices[0].message?.content;
         chat.addMessage('system',`${generatedMessage}`)
+        console.log(chat);
         await (client.channels.cache.get('1113746443480600676') as TextChannel).send(generatedMessage?.slice(0,1999) || "");
 
     
