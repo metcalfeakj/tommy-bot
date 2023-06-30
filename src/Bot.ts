@@ -4,7 +4,8 @@ import ready from "./listeners/ready";
 import message from "./listeners/message";
 import interactionCreate from './listeners/interactionCreate';
 import connection from './database/Connection';
-import ExecutionTimestamp from './handlers/execution-timestamp';
+import ExecutionTimestamp from './events/execution-timestamp';
+import config from './config';
 
 const lastRunExecution = new ExecutionTimestamp('./lastRunTime');
 const lastRunExecutionDate: Date = lastRunExecution.initializeExecutionTimestamp();
@@ -23,15 +24,6 @@ function formatDate(date: Date): string {
   
 
 dotenv.config();
-const startMessage:string = `Tommy Bot initialised at 🕰️ ${formatDate(lastRunExecutionDate)} 
-🤖 Model: ${process.env.MODEL} 
-🔢 Max Tokens: ${process.env.MAX_TOKENS} 
-🌡️ Temperature: ${process.env.TEMPERATURE} 
-🌱 Seed: ${process.env.SEED} 
-🚀 Starting message: 
-
-${process.env.BEGIN} 
-`
 
 
 const discord_token = process.env.DISCORD_TOKEN
@@ -46,7 +38,7 @@ const client = new Client({
 const database = connection;
 database.authenticate();
 database.sync();
-ready(client, startMessage);
+ready(client);
 interactionCreate(client);
 message(client,database, lastRunExecutionDate);
 client.login(discord_token);

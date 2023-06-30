@@ -3,8 +3,11 @@ import { Client, Message, TextChannel } from "discord.js";
 import { Sequelize } from "sequelize-typescript";
 import { Configuration, OpenAIApi, ChatCompletionRequestMessage } from "openai";
 import * as dotenv from 'dotenv';
-import { upsertMessage } from '../handlers/upsertMessage';
-import ChatMessages from "./chatMessages";
+import { upsertMessage } from '../events/upsertMessage';
+import ChatMessages from "../models/chat-messages";
+import ChatMessagesCollection from '../models/chat-messages-collection';
+import { messageHandler } from "../events/message-handler";
+
 let halt: boolean = false;
 
 dotenv.config();
@@ -13,7 +16,7 @@ const chatBuffer: ChatCompletionRequestMessage[] = []
 const openai = new OpenAIApi(new Configuration({
     apiKey: process.env.OPENAI_API_KEY
 }));
-const chat = new ChatMessages('system', `${process.env.SEED}`, 30000);
+const chat = new ChatMessages('system', `${process.env.SEED}`, 11000);
 // const records: Record[] = [];
 
 /* const getResponse = async (userInput: string) => {
@@ -79,7 +82,7 @@ const getAuthorName = async (client: Client, message: Message): Promise<string> 
     }
 };
 
-async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletionRequestMessage[], chatBuffer: ChatCompletionRequestMessage[], client: Client) {
+/* async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletionRequestMessage[], chatBuffer: ChatCompletionRequestMessage[], client: Client) {
     const currentDateTime = new Date();
     const timeDifference = currentDateTime.getTime() - lastExecutionRun.getTime();
 
@@ -91,8 +94,6 @@ async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletion
 
         lastExecutionRun.setTime(lastExecutionRun.getTime())
         lastExecutionRun.setDate(lastExecutionRun.getDate())
-        console.log('yay');
-        console.log(chat.getAllMessages());
     
         try {
         const response = await openai.createChatCompletion({
@@ -105,7 +106,7 @@ async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletion
         const { choices } = response.data || { choices: [] };
         const generatedMessage = choices[0].message?.content;
         chat.addMessage('system',`${generatedMessage}`)
-        console.log(chat);
+        console.log(`JSON DUMP:\n${chat.getAllMessagesJSON()}\n`);
         await (client.channels.cache.get('1113746443480600676') as TextChannel).send(generatedMessage?.slice(0,1999) || "");
 
     
@@ -117,31 +118,30 @@ async function tickExecution(lastExecutionRun: Date, chatHistory: ChatCompletion
         }
     }
 }
-
+ */
 export default (client: Client, database: Sequelize, lastExecutionRun: Date): void => {
-    setInterval(() => tickExecution(lastExecutionRun, chatHistory, chatBuffer, client), 3000);
+    // setInterval(() => tickExecution(lastExecutionRun, chatHistory, chatBuffer, client), 3000);
     client.on("messageCreate", async (message: Message) => {
-        const currentDateTime = new Date();
+        const doc = await messageHandler(message, client, database);
+        console.log(doc);
+       /*  const currentDateTime = new Date();
         lastExecutionRun.setDate(currentDateTime.getDate());
         lastExecutionRun.setTime(currentDateTime.getTime());
         const channelName = await getChannelName(client, message);
         const authorName = await getAuthorName(client, message);
         const record = { server_name: message.guild?.name, server_channel: channelName, author: authorName, message: message.content };
-        // console.log(`${message.guild?.name} - ${channelName} - ${authorName}: ${message.content}`);
         if (channelName === 'talk-to-tommy') {
             await upsertMessage(database, record);
             // await summariseMessages(database, 5, lastExecutionRun, openai, client);
             if (message.content.length <= 1999 && !message.author.bot) {
-                chatBuffer.push({ role: 'user', content: `${authorName}: ${message.content}` });
+                const chatMessagesInstance = ChatMessagesCollection.getChatMessagesInstance(`${message.channelId}`);
+                
+                if (chatMessagesInstance){
+                    chatMessagesInstance?.addMessage('user', `${authorName}: ${message.content}`);
+                    chatMessagesInstance?.setProcessed(false);
+                };
             }
 
-        }
-        // if (!message.author.bot){
-        //     const response = await getResponse(message.content);
-        //     if (response) {
-        //         await message.reply(response);
-        //     }
-        // }
+        } */
     });
-    // have a counter that goes up every time the messageCreate event occurs. After 100, it will call the getSummary function and then reset the counter.
 }

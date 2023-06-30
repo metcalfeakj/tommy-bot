@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import * as dotenv from 'dotenv';
-import {MessageTable, CassetteTapeTable} from './models';
+import {CassetteTapeTable} from './models';
 dotenv.config()
 
 const connection = new Sequelize({
@@ -14,8 +14,8 @@ const connection = new Sequelize({
   password: process.env.MARIADB_PASSWORD,
   database: process.env.MARIADB_DATABASE,
   logging: false,
-  models: [MessageTable, CassetteTapeTable],
-  sync: { alter: true },
+  models: [CassetteTapeTable],
+  sync: { force: true },
 });
 
 export default connection;

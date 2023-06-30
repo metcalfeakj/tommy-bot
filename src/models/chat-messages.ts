@@ -24,6 +24,8 @@ class ChatMessages {
   private messages: ChatCompletionRequestMessage[];
   private totalCharacterCounter: TotalCharacterCounter;
   private totalMessageLength: number;
+  private lastDateChanged: Date;
+  private processed: boolean;
 
   constructor(
     persistentRole: string,
@@ -37,13 +39,11 @@ class ChatMessages {
     this.messages = [initialMessage];
     this.totalCharacterCounter = new TotalCharacterCounter(JSON.stringify(initialMessage).length);
     this.totalMessageLength = totalMessageLength;
+    this.lastDateChanged = new Date();
+    this.processed = true;
   }
 
   addMessage(role: string, content: string) {
-    if (content.length > 2000) {
-      throw new Error('Content length exceeds the limit of 2000 characters.');
-    }
-
     const message: ChatCompletionRequestMessage = {
       role: role as ChatCompletionRequestMessage['role'],
       content,
@@ -60,15 +60,17 @@ class ChatMessages {
 
     this.messages.push(message);
     this.totalCharacterCounter.add(message);
+    this.updateLastChangedDate();
   }
 
   /**
    * Clears all messages, leaving only the initial message in the array.
    * This is intentional behavior to maintain a persistent initial message.
    */
-  clearMessages() {
+  clearMessages(): void {
     this.messages = this.messages.slice(0, 1);
     this.totalCharacterCounter = new TotalCharacterCounter(this.messages[0].content.length);
+    this.updateLastChangedDate();
   }
 
   appendBuffer(chatBuffer: ChatCompletionRequestMessage[]) {
@@ -77,8 +79,51 @@ class ChatMessages {
     }
   }
 
-  getAllMessages() {
+  getAllMessages(): ChatCompletionRequestMessage[] {
     return this.messages;
+  }
+
+  getAllMessagesJSON(): string {
+    return JSON.stringify(this.messages);
+  }
+
+  updateLastChangedDate(): void {
+    const currentDateTime = new Date();
+    this.lastDateChanged.setDate(currentDateTime.getDate());
+    this.lastDateChanged.setTime(currentDateTime.getTime());
+  }
+
+  setProcessed(isProcessed: boolean): void{
+    this.processed = isProcessed;
+  }
+
+  getProcessed(): boolean{
+    return this.processed;
+  }
+
+  getLastChangedDate(): Date {
+    return this.lastDateChanged;
+  }
+
+  serialize(): string {
+    return JSON.stringify(this);
+  }
+
+  static deserialize(serialized: string): ChatMessages {
+    const obj = JSON.parse(serialized);
+
+    const chatMessages = new ChatMessages(
+      obj.messages[0].role,
+      obj.messages[0].content,
+      obj.totalMessageLength,
+    );
+
+    chatMessages.messages = obj.messages;
+    chatMessages.totalCharacterCounter = new TotalCharacterCounter(obj.totalCharacterCounter.totalCount);
+    chatMessages.lastDateChanged = new Date(obj.lastDateChanged);
+    chatMessages.processed = obj.processed;
+
+    return chatMessages;
   }
 }
 

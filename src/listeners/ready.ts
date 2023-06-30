@@ -1,14 +1,14 @@
 import { Client, TextChannel } from "discord.js";
 import { Commands } from "../Commands";
 
-export default (client: Client, startMessage: string): void => {
+export default (client: Client): void => {
     client.on("ready", async () => {
         if (!client.user || !client.application) {
             return;
         }
         await client.application.commands.set(Commands);
         console.log(`${client.user.username} is online`);
-        await (client.channels.cache.get('1113746443480600676') as TextChannel).send(startMessage);
+        // await (client.channels.cache.get('1113746443480600676') as TextChannel).send(startMessage);
 
     });
 }; 

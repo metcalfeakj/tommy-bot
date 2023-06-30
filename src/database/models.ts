@@ -2,42 +2,6 @@ import { Table, Model, Column, DataType } from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  tableName: "messages",
-  charset: 'utf8mb4',
-  collate: 'utf8mb4_unicode_ci'
-})
-
-class MessageTable extends Model {
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    
-  })
-  declare server_name: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  declare server_channel: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  declare author: string;
-
-  @Column({
-    type: DataType.TEXT,
-    allowNull: false,
-    
-  })
-  declare message: string;
-}
-
-
-@Table({
-  timestamps: true,
   tableName: "cassette_tape",
   charset: 'utf8mb4',
   collate: 'utf8mb4_unicode_ci'
@@ -45,31 +9,53 @@ class MessageTable extends Model {
 class CassetteTapeTable extends Model {
 
   @Column({
-    type: DataType.INTEGER,
-    primaryKey: true,
-    autoIncrement: true
-  })
-  declare id: number;
-
-  @Column({
-    type: DataType.JSON,
+    type: DataType.STRING,
     allowNull: false,
   })
-  declare chat_history: JSON;
+  declare authorId: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare authorName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare serverId: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare serverName: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare channelId: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare channelName: string;
 
   @Column({
     type: DataType.TEXT,
     allowNull: false,
   })
-  declare summary: string;
+  declare messageContent: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.DATE,
     allowNull: false,
   })
-  declare model: string;
-
+  declare messageDate: Date;
 }
 
 
-export { MessageTable,  CassetteTapeTable}
+export { CassetteTapeTable}
