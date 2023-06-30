@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Optional } from 'sequelize/types';
 import { CassetteTapeTable } from '../database/models';
 import { Client, Message, TextChannel, DMChannel } from "discord.js";
 
@@ -16,7 +15,7 @@ interface messageEvent  {
 
 export const messageHandler = async (message: Message, client: Client, database: Sequelize): Promise<messageEvent> => {
     const document = mapMessage(message, client);
-    const record = await CassetteTapeTable.create(document as any);
+    await upsertMessage(database,document as any);
 
     return document;
 };
@@ -49,10 +48,9 @@ const mapMessage = (message: Message, client: Client): messageEvent => {
     return document;
 };
 
-const upsertMessage = async (database: Sequelize, record: Optional<any, string> | undefined): Promise<void> => {
+const upsertMessage = async (database: Sequelize, document: messageEvent): Promise<void> => {
     try {
-        const newRecord = database.models.CassetteTapeTable.build(record);
-        await newRecord.save();
+        await CassetteTapeTable.create(document as any);
     }
     catch (e) {
         console.log('Error - failed to save message to database.', e);
