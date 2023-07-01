@@ -2,7 +2,7 @@ import { Table, Model, Column, DataType } from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  tableName: "cassette_tape",
+  tableName: "CassetteTape",
   charset: 'utf8mb4',
   collate: 'utf8mb4_unicode_ci'
 })
@@ -55,7 +55,55 @@ class CassetteTapeTable extends Model {
     allowNull: false,
   })
   declare messageDate: Date;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  declare isBot: boolean;
 }
 
 
-export { CassetteTapeTable}
+
+@Table({
+  timestamps: true,
+  tableName: "ChannelConfigs",
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
+})
+class ChannelConfigsTable extends Model {
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    primaryKey: true,
+  })
+  declare channelId: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare persistentContent: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  declare persistentRole: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  declare totalMessageLength: number;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  declare sentient: boolean;
+}
+
+
+export { CassetteTapeTable, ChannelConfigsTable}

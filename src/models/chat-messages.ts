@@ -26,11 +26,13 @@ class ChatMessages {
   private totalMessageLength: number;
   private lastDateChanged: Date;
   private processed: boolean;
+  private sentient: boolean;
 
   constructor(
     persistentRole: string,
     persistentContent: string,
-    totalMessageLength: number
+    totalMessageLength: number,
+    sentient: boolean,
   ) {
     const initialMessage = {
       role: persistentRole as ChatCompletionRequestMessage['role'],
@@ -41,6 +43,7 @@ class ChatMessages {
     this.totalMessageLength = totalMessageLength;
     this.lastDateChanged = new Date();
     this.processed = true;
+    this.sentient = sentient;
   }
 
   addMessage(role: string, content: string) {
@@ -105,6 +108,14 @@ class ChatMessages {
     return this.lastDateChanged;
   }
 
+  setSentient(isSentient: boolean): void{
+    this.sentient = isSentient;
+  }
+
+  getSentient(): boolean {
+    return this.sentient;
+  }
+
   serialize(): string {
     return JSON.stringify(this);
   }
@@ -116,6 +127,7 @@ class ChatMessages {
       obj.messages[0].role,
       obj.messages[0].content,
       obj.totalMessageLength,
+      obj.sentient,
     );
 
     chatMessages.messages = obj.messages;

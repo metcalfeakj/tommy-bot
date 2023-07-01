@@ -1,4 +1,3 @@
-import * as dotenv from 'dotenv'
 import { Client, Partials, GatewayIntentBits } from "discord.js";
 import ready from "./listeners/ready";
 import message from "./listeners/message";
@@ -6,31 +5,43 @@ import interactionCreate from './listeners/interactionCreate';
 import connection from './database/Connection';
 import ExecutionTimestamp from './events/execution-timestamp';
 import config from './config';
+import ChatMessagesCollection, {ChatMessagesConfig} from "./models/chat-messages-collection";
+import { ChannelConfigsTable } from "./database/models";
+import { Configuration, OpenAIApi} from "openai";
+import Ticker from './Ticker';
+
+
 
 const lastRunExecution = new ExecutionTimestamp('./lastRunTime');
 const lastRunExecutionDate: Date = lastRunExecution.initializeExecutionTimestamp();
+const openai = new OpenAIApi(new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+}));
 
-function formatDate(date: Date): string {
-    let day = ("0" + date.getDate()).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-    let year = date.getFullYear();
   
-    let hours = ("0" + date.getHours()).slice(-2);
-    let minutes = ("0" + date.getMinutes()).slice(-2);
-    let seconds = ("0" + date.getSeconds()).slice(-2);
-  
-    return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`;
-  }
-  
-
-dotenv.config();
-
-
-const discord_token = process.env.DISCORD_TOKEN
-
 console.log("Bot is starting...");
 
-const client = new Client({
+
+
+async function initializeChatMessagesCollection() {
+  const channelConfigs: ChannelConfigsTable[] = await ChannelConfigsTable.findAll();
+
+  // Convert the records into ChatMessagesConfig format
+  const chatMessagesConfigs: ChatMessagesConfig[] = channelConfigs.map(config => ({
+      channelId: config.channelId,
+      persistentRole: config.persistentRole,
+      persistentContent: config.persistentContent,
+      totalMessageLength: config.totalMessageLength,
+      sentient: config.sentient,
+  }));
+
+  // Initialize ChatMessagesCollection with the converted records
+  return new ChatMessagesCollection(chatMessagesConfigs);
+}
+
+
+async function main() {
+  const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
 });
@@ -38,7 +49,15 @@ const client = new Client({
 const database = connection;
 database.authenticate();
 database.sync();
-ready(client);
+  const chatMessagesCollection = await initializeChatMessagesCollection();
+  ready(client);
 interactionCreate(client);
-message(client,database, lastRunExecutionDate);
-client.login(discord_token);
+setInterval(() => Ticker(config, lastRunExecutionDate, client,chatMessagesCollection,openai), 3000);
+message(client,database,chatMessagesCollection);
+client.login(config.discordToken);
+
+}
+
+main().catch(error => {
+  console.error("An error occurred:", error);
+});

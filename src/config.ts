@@ -20,7 +20,7 @@ if (!process.env.DISCORD_TOKEN ||
 }
 
 // Define your configuration logic
-interface AppConfig {
+export interface AppConfig {
   discordToken: string;
   mariadbUsername: string;
   mariadbPassword: string;

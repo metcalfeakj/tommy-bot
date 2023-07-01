@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({
   timestamps: true,
-  tableName: 'chat_messages',
+  tableName: 'ChatMessages',
   charset: 'utf8mb4',
   collate: 'utf8mb4_unicode_ci'
 })
