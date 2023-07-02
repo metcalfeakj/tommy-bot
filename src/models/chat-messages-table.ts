@@ -16,7 +16,7 @@ export class ChatMessagesTable extends Model {
   declare channelId: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.TEXT,
     allowNull: true
   })
   declare serializedData: string;

@@ -1,4 +1,6 @@
 import { Command } from "./Command";
-import { Hello } from "./commands/Hello";
+import { Save } from "./commands/Save";
+import { Load } from "./commands/Load";
+import { Reply } from "./commands/Reply";
 
-export const Commands: Command[] = [Hello]; 
+export const Commands: Command[] = [Load,Save,Reply]; 

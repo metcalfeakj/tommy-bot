@@ -1,15 +1,18 @@
 import { ChatInputCommandInteraction, Client, Interaction } from "discord.js";
 import { Commands } from "../Commands";
+import ChatMessagesCollection from "../models/chat-messages-collection";
+import { OpenAIApi } from "openai";
+import { AppConfig } from "../config";
 
-export default (client: Client): void => {
+export default (client: Client, chatMessagesCollection: ChatMessagesCollection, config: AppConfig, openai: OpenAIApi): void => {
     client.on("interactionCreate", async (interaction: Interaction) => {
         if (interaction.isChatInputCommand()) {
-            await handleSlashCommand(client, interaction);
+            await handleSlashCommand(client, interaction, chatMessagesCollection, config, openai);
         }
     });
 };
 
-const handleSlashCommand = async (client: Client, interaction: ChatInputCommandInteraction): Promise<void> => {
+const handleSlashCommand = async (client: Client, interaction: ChatInputCommandInteraction, chatMessagesCollection: ChatMessagesCollection, config: AppConfig, openai: OpenAIApi): Promise<void> => {
     const slashCommand = Commands.find(c => c.name === interaction.commandName);
     if (!slashCommand) {
         interaction.followUp({ content: "An error has occurred" });
@@ -18,5 +21,5 @@ const handleSlashCommand = async (client: Client, interaction: ChatInputCommandI
 
     await interaction.deferReply();
 
-    slashCommand.run(client, interaction);
+    slashCommand.run(client, interaction, chatMessagesCollection, config, openai);
 }; 

@@ -51,7 +51,7 @@ database.authenticate();
 database.sync();
   const chatMessagesCollection = await initializeChatMessagesCollection();
   ready(client);
-interactionCreate(client);
+interactionCreate(client, chatMessagesCollection, config, openai);
 setInterval(() => Ticker(config, lastRunExecutionDate, client,chatMessagesCollection,openai), 3000);
 message(client,database,chatMessagesCollection);
 client.login(config.discordToken);
