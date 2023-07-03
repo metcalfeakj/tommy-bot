@@ -1,8 +1,6 @@
-import { Sequelize } from 'sequelize-typescript';
 import { CassetteTapeTable } from '../database/models';
-import { Client, Message, TextChannel, DMChannel } from "discord.js";
+import { Message, TextChannel, DMChannel } from "discord.js";
 import ChatMessagesCollection from '../models/chat-messages-collection';
-import ChatMessages from '../models/chat-messages';
 import TommyClient from '../tommy-client';
 
 interface messageEvent  {
@@ -71,7 +69,7 @@ const addToChatMessages = async (chatMessagesCollection: ChatMessagesCollection,
         if (chatMessages){
             if (document.isBot === true){
                 chatMessages.addMessage('assistant', document.messageContent);
-                //console.log(document)
+                console.log(document)
             } else{
                 chatMessages.addMessage('user', `User ${document.authorName} said: ${document.messageContent}`);
                 chatMessages.setProcessed(false);
