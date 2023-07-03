@@ -3,6 +3,7 @@ import { CassetteTapeTable } from '../database/models';
 import { Client, Message, TextChannel, DMChannel } from "discord.js";
 import ChatMessagesCollection from '../models/chat-messages-collection';
 import ChatMessages from '../models/chat-messages';
+import TommyClient from '../tommy-client';
 
 interface messageEvent  {
     authorId: string;
@@ -16,19 +17,16 @@ interface messageEvent  {
     isBot: boolean;
 }
 
-export const messageHandler = async (message: Message, client: Client, database: Sequelize, chatMessagesCollection: ChatMessagesCollection): Promise<messageEvent> => {
+export const messageHandler = async (message: Message, client: TommyClient): Promise<messageEvent> => {
     const document = mapMessage(message, client);
-    await upsertMessage(database,document as any);
+    await upsertMessage(document as any);
 
-    await addToChatMessages(chatMessagesCollection, document);
-
-    // Get ChatMessages instance by channel id.
-    
+    await addToChatMessages(client.chatMessagesCollection, document);
 
     return document;
 };
 
-const mapMessage = (message: Message, client: Client): messageEvent => {
+const mapMessage = (message: Message, client: TommyClient): messageEvent => {
     const author = message.author;
     const channel = message.channel as DMChannel | TextChannel;
 
@@ -57,7 +55,7 @@ const mapMessage = (message: Message, client: Client): messageEvent => {
     return document;
 };
 
-const upsertMessage = async (database: Sequelize, document: messageEvent): Promise<void> => {
+const upsertMessage = async (document: messageEvent): Promise<void> => {
     try {
         await CassetteTapeTable.create(document as any);
     }
@@ -72,7 +70,8 @@ const addToChatMessages = async (chatMessagesCollection: ChatMessagesCollection,
     const chatMessages = chatMessagesCollection.getChatMessagesInstance(channelId);
         if (chatMessages){
             if (document.isBot === true){
-                //chatMessages.addMessage('assistant', document.messageContent);
+                chatMessages.addMessage('assistant', document.messageContent);
+                //console.log(document)
             } else{
                 chatMessages.addMessage('user', `User ${document.authorName} said: ${document.messageContent}`);
                 chatMessages.setProcessed(false);

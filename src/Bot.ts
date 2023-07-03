@@ -1,24 +1,16 @@
-import { Client, Partials, GatewayIntentBits } from "discord.js";
+import { Partials, GatewayIntentBits } from "discord.js";
 import ready from "./listeners/ready";
 import message from "./listeners/message";
 import interactionCreate from './listeners/interactionCreate';
 import connection from './database/Connection';
 import ExecutionTimestamp from './events/execution-timestamp';
-import config from './config';
-import ChatMessagesCollection, {ChatMessagesConfig} from "./models/chat-messages-collection";
+import config from './app-config';
+import ChatMessagesCollection, { ChatMessagesConfig } from "./models/chat-messages-collection";
 import { ChannelConfigsTable } from "./database/models";
-import { Configuration, OpenAIApi} from "openai";
+import { Configuration, OpenAIApi } from "openai";
 import Ticker from './Ticker';
+import TommyClient from "./tommy-client";
 
-
-
-const lastRunExecution = new ExecutionTimestamp('./lastRunTime');
-const lastRunExecutionDate: Date = lastRunExecution.initializeExecutionTimestamp();
-const openai = new OpenAIApi(new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-}));
-
-  
 console.log("Bot is starting...");
 
 
@@ -28,33 +20,52 @@ async function initializeChatMessagesCollection() {
 
   // Convert the records into ChatMessagesConfig format
   const chatMessagesConfigs: ChatMessagesConfig[] = channelConfigs.map(config => ({
-      channelId: config.channelId,
-      persistentRole: config.persistentRole,
-      persistentContent: config.persistentContent,
-      totalMessageLength: config.totalMessageLength,
-      sentient: config.sentient,
+    channelId: config.channelId,
+    persistentRole: config.persistentRole,
+    persistentContent: config.persistentContent,
+    totalMessageLength: config.totalMessageLength,
+    sentient: config.sentient,
   }));
 
   // Initialize ChatMessagesCollection with the converted records
-  return new ChatMessagesCollection(chatMessagesConfigs);
+  return chatMessagesConfigs
 }
 
 
 async function main() {
-  const client = new Client({
+
+  // Init the Last Execution Run Date
+  const lastRunExecution = new ExecutionTimestamp('./lastRunTime');
+  const lastRunExecutionDate: Date = lastRunExecution.initializeExecutionTimestamp();
+
+  // Connect to Sequelize and sync up models
+  connection.authenticate();
+  connection.sync();
+
+  // Retrieve saved channel configs
+  const chatMessagesConfigs = await initializeChatMessagesCollection();
+  
+  // Init openai
+  const openai = new OpenAIApi(new Configuration({
+    apiKey: config.openaiApiKey
+  }));
+
+  // Init TommyClient
+  TommyClient.initialize({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
-});
+  }, config, connection, new ChatMessagesCollection(chatMessagesConfigs), openai, lastRunExecutionDate);
 
-const database = connection;
-database.authenticate();
-database.sync();
-  const chatMessagesCollection = await initializeChatMessagesCollection();
+  // Grab singleton
+  const client = TommyClient.getInstance();
+
+
   ready(client);
-interactionCreate(client, chatMessagesCollection, config, openai);
-setInterval(() => Ticker(config, lastRunExecutionDate, client,chatMessagesCollection,openai), 3000);
-message(client,database,chatMessagesCollection);
-client.login(config.discordToken);
+
+  interactionCreate(client);
+  setInterval(() => Ticker(client), 3000);
+  message(client);
+  client.login(config.discordToken);
 
 }
 

@@ -5,13 +5,14 @@ import ChatMessagesCollection from "../models/chat-messages-collection";
 import ChatMessages from "../models/chat-messages";
 import { saveChatMessages } from "./logic/save-chat-message";
 import { OpenAIApi } from "openai";
-import { AppConfig } from "../config";
+import { AppConfig } from "../app-config";
+import TommyClient from "../tommy-client";
 
 export const Save: Command = {
     name: "save",
     description: "Save current chat.",
-    run: async (client: Client, interaction: ChatInputCommandInteraction, chatMessagesCollection: ChatMessagesCollection,  config: AppConfig, openai: OpenAIApi) => {
-        const content:string  = await saveChatMessages(interaction.channelId,chatMessagesCollection);
+    run: async (client: TommyClient, interaction: ChatInputCommandInteraction) => {
+        const content:string  = await saveChatMessages(interaction.channelId,client.chatMessagesCollection);
 
         await interaction.followUp({
             ephemeral: true,

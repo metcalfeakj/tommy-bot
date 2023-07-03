@@ -1,8 +1,9 @@
 import { ChatInputCommandInteraction, ChatInputApplicationCommandData, Client } from "discord.js";
 import ChatMessagesCollection from "./models/chat-messages-collection";
 import { OpenAIApi } from "openai";
-import { AppConfig } from "./config";
+import { AppConfig } from "./app-config";
+import TommyClient from "./tommy-client";
 
 export interface Command extends ChatInputApplicationCommandData {
-    run: (client: Client, interaction: ChatInputCommandInteraction, chatMessagesCollection: ChatMessagesCollection, config: AppConfig, openai: OpenAIApi) => void;
+    run: (client: TommyClient, interaction: ChatInputCommandInteraction) => void;
 } 

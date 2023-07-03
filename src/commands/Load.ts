@@ -5,14 +5,15 @@ import ChatMessagesCollection from "../models/chat-messages-collection";
 import ChatMessages from "../models/chat-messages";
 import { loadChatMessages } from "./logic/load-chat-messages";
 import { OpenAIApi } from "openai";
-import { AppConfig } from "../config";
+import { AppConfig } from "../app-config";
+import TommyClient from "../tommy-client";
 
 export const Load: Command = {
     name: "load",
     description: "Load saved chat.",
-    run: async (client: Client, interaction: ChatInputCommandInteraction, chatMessagesCollection: ChatMessagesCollection, config: AppConfig, openai: OpenAIApi) => {
+    run: async (client: TommyClient, interaction: ChatInputCommandInteraction) => {
         
-        const content:string  = await loadChatMessages(interaction.channelId,chatMessagesCollection);
+        const content:string  = await loadChatMessages(interaction.channelId,client.chatMessagesCollection);
 
         await interaction.followUp({
             ephemeral: true,

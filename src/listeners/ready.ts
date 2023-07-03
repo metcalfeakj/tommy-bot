@@ -1,7 +1,8 @@
 import { Client, TextChannel } from "discord.js";
 import { Commands } from "../Commands";
+import TommyClient from "../tommy-client";
 
-export default (client: Client): void => {
+export default (client: TommyClient): void => {
     client.on("ready", async () => {
         if (!client.user || !client.application) {
             return;

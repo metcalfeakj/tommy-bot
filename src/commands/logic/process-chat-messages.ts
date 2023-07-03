@@ -1,24 +1,18 @@
-import axios from 'axios';
-import ChatMessagesCollection from '../../models/chat-messages-collection';
 import ChatMessages from '../../models/chat-messages';
-import { ChatMessagesTable } from '../../models/chat-messages-table';
-import { Client, TextChannel } from 'discord.js';
-import { OpenAIApi } from 'openai';
-import { AppConfig } from '../../config';
-import { channel } from 'diagnostics_channel';
+import TommyClient from '../../tommy-client';
 
 function delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const processChatMessage = async (config: AppConfig,chatMessage: ChatMessages, openai: OpenAIApi, client: Client): Promise<string> => {
+const processChatMessage = async (chatMessage: ChatMessages, client: TommyClient): Promise<string> => {
     let res: string = '';
     try {
-        const response = await openai.createChatCompletion({
-            model: config.model || "gpt-3.5-turbo",
+        const response = await client.openai.createChatCompletion({
+            model: client.config.model || "gpt-3.5-turbo",
             messages: chatMessage.getAllMessages(),
-            max_tokens: Number(config.maxTokens) || 4096,
-            temperature: Number(config.temperature) || 0.7,
+            max_tokens: Number(client.config.maxTokens) || 4096,
+            temperature: Number(client.config.temperature) || 0.7,
             n: 1
         });
         const { choices } = response.data || { choices: [] };
@@ -35,12 +29,12 @@ const processChatMessage = async (config: AppConfig,chatMessage: ChatMessages, o
 }
 
 
-export const processChatMessages = async (channelId: string, chatMessagesCollection: ChatMessagesCollection, config: AppConfig, openai: OpenAIApi, client: Client): Promise<string> => {
+export const processChatMessages = async (channelId: string, client: TommyClient): Promise<string> => {
 
     try {
-        const chatMessage = chatMessagesCollection.getChatMessagesInstance(channelId);
+        const chatMessage = client.chatMessagesCollection.getChatMessagesInstance(channelId);
         if (chatMessage) {
-        const response = await processChatMessage(config, chatMessage,openai,client)
+        const response = await processChatMessage(chatMessage,client)
         return response;
         }else {
             return 'Not found.'

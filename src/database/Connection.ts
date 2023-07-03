@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import {CassetteTapeTable, ChannelConfigsTable} from './models';
 import { ChatMessagesTable } from "../models/chat-messages-table";
-import config from '../config';
+import config from '../app-config';
 
 const connection = new Sequelize({
   dialect: "mariadb",
