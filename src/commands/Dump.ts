@@ -16,7 +16,7 @@ export const Dump: Command = {
         let content:string  = 'No buffer.'
         const chatMessage = client.chatMessagesCollection.getChatMessagesInstance(interaction.channelId);
         if (chatMessage) {
-            content = chatMessage.getAllMessagesJSON();
+            content = chatMessage.getAllMessagesJSON().slice(0,1999);
             }
             
         await interaction.followUp({
