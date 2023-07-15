@@ -69,7 +69,7 @@ const addToChatMessages = async (chatMessagesCollection: ChatMessagesCollection,
         if (chatMessages){
             if (document.isBot === true){
                 chatMessages.addMessage('assistant', document.messageContent);
-                console.log(document)
+                //console.log(document)
             } else{
                 chatMessages.addMessage('user', `User ${document.authorName} said: ${document.messageContent}`);
                 chatMessages.setProcessed(false);

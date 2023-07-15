@@ -72,13 +72,13 @@ class ChatMessages {
    */
   clearMessages(): void {
     this.messages = this.messages.slice(0, 1);
-    this.totalCharacterCounter = new TotalCharacterCounter(this.messages[0].content.length);
+    this.totalCharacterCounter = new TotalCharacterCounter(this.messages[0]?.content?.length ?? 0);
     this.updateLastChangedDate();
   }
 
   appendBuffer(chatBuffer: ChatCompletionRequestMessage[]) {
     for (const message of chatBuffer) {
-      this.addMessage(message.role, message.content);
+      this.addMessage(message.role, message.content || '');
     }
   }
 
