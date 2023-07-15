@@ -1,6 +1,4 @@
-import axios from 'axios';
 import ChatMessagesCollection from '../../models/chat-messages-collection';
-import ChatMessages from '../../models/chat-messages';
 import { ChatMessagesTable } from '../../models/chat-messages-table';
 
 export const loadChatMessages = async (channelId: string, chatMessagesCollection: ChatMessagesCollection): Promise<string> => {
