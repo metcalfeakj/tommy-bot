@@ -10,6 +10,7 @@ import { ChannelConfigsTable } from "./database/models";
 import { Configuration, OpenAIApi } from "openai";
 import Ticker from './Ticker';
 import TommyClient from "./tommy-client";
+import audit from "./listeners/audit";
 
 console.log("Bot is starting...");
 
@@ -44,7 +45,7 @@ async function main() {
 
   // Retrieve saved channel configs
   const chatMessagesConfigs = await initializeChatMessagesCollection();
-  
+
   // Init openai
   const openai = new OpenAIApi(new Configuration({
     apiKey: config.openaiApiKey
@@ -53,7 +54,7 @@ async function main() {
   // Init TommyClient
   TommyClient.initialize({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages]
+    intents: [GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.Guilds, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildModeration, GatewayIntentBits.GuildMembers]
   }, config, connection, new ChatMessagesCollection(chatMessagesConfigs), openai, lastRunExecutionDate);
 
   // Grab singleton
@@ -64,9 +65,9 @@ async function main() {
 
   interactionCreate(client);
   setInterval(() => Ticker(client), 3000);
+  audit(client);
   message(client);
   client.login(config.discordToken);
-
 }
 
 main().catch(error => {

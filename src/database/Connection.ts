@@ -15,7 +15,7 @@ const connection = new Sequelize({
   database: config.mariadbDatabase,
   logging: false,
   models: [CassetteTapeTable, ChatMessagesTable, ChannelConfigsTable],
-  sync: { alter: true },
+  sync: { alter : true },
 });
 
 export default connection;

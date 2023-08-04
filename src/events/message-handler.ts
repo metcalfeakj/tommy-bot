@@ -6,6 +6,7 @@ import TommyClient from '../tommy-client';
 interface messageEvent  {
     authorId: string;
     authorName: string;
+    authorNickname: string | null;
     serverId: string | null;
     serverName: string | null;
     channelId: string;
@@ -41,6 +42,7 @@ const mapMessage = (message: Message, client: TommyClient): messageEvent => {
     const document: messageEvent = {
         authorId: author.id,
         authorName: author.username,
+        authorNickname: author.displayName,
         serverId: serverId,
         serverName: serverName,
         channelId: channel.id,
@@ -71,7 +73,7 @@ const addToChatMessages = async (chatMessagesCollection: ChatMessagesCollection,
                 chatMessages.addMessage('assistant', document.messageContent);
                 //console.log(document)
             } else{
-                chatMessages.addMessage('user', `User ${document.authorName} said: ${document.messageContent}`);
+                chatMessages.addMessage('user', `User ${document.authorNickname} said: ${document.messageContent}`);
                 chatMessages.setProcessed(false);
             }
         }
