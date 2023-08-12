@@ -7,10 +7,25 @@ import { Sequelize } from "sequelize-typescript";
 class TommyClient extends Client {
     config: AppConfig;
     database: Sequelize;
-    chatMessagesCollection: ChatMessagesCollection;
     openai: OpenAIApi;
     lastRunExecutionDate: Date;
 
+    // Step 1: Create a private property
+    private _chatMessagesCollection: ChatMessagesCollection;
+
+    // Step 2: Modify the public property to use the getter and setter
+    public get chatMessagesCollection(): ChatMessagesCollection {
+        return this._chatMessagesCollection;
+    }
+
+    public set chatMessagesCollection(value: ChatMessagesCollection) {
+        // Step 3: Inside the setter, you can add any logic you want for setting the property
+        if (value) {
+            this._chatMessagesCollection = value;
+        } else {
+            throw new Error("Invalid value for chatMessagesCollection");
+        }
+    }
     private static instance: TommyClient;
 
     private constructor(
@@ -24,7 +39,7 @@ class TommyClient extends Client {
         super(clientOptions); // Pass the clientOptions to the base class constructor
         this.config = config;
         this.database = database;
-        this.chatMessagesCollection = chatMessagesCollection;
+        this._chatMessagesCollection = chatMessagesCollection;
         this.openai = openai;
         this.lastRunExecutionDate = lastRunExecutionDate;
     }
