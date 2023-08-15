@@ -1,9 +1,30 @@
 import ChatMessagesCollection, { ChatMessagesConfig } from '../../models/chat-messages-collection';
 import { ChannelConfigsTable } from '../../database/models';
 import TommyClient from '../../tommy-client';
-export const reloadChannelConfigs = async (client: TommyClient): Promise<string> => {
+
+async function updatePersistentContentByChannelId(channelId: string, newValue: string) {
+    // 1. Fetch the record by channelId
+    const channelConfig = await ChannelConfigsTable.findOne({ where: { channelId } });
+
+    if (channelConfig) {
+        // 2. Modify the attribute
+        channelConfig.persistentContent = newValue;
+
+        // 3. Save the modified record
+        await channelConfig.save();
+    } else {
+        console.log('Record not found for channelId:', channelId);
+    }
+}
+
+
+export const reloadChannelConfigs = async (client: TommyClient, channelId: string, persona: string): Promise<string> => {
 
     try {
+        if (persona !== '') {
+            await updatePersistentContentByChannelId(channelId, persona);
+
+        }
         const channelConfigs: ChannelConfigsTable[] = await ChannelConfigsTable.findAll();
 
 
