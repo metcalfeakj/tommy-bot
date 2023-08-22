@@ -1,7 +1,5 @@
 
-import { Client, Message } from "discord.js";
-import { Sequelize } from "sequelize-typescript";
-import ChatMessagesCollection from '../models/chat-messages-collection';
+import { Message } from "discord.js";
 import { messageHandler } from "../events/message-handler";
 import TommyClient from "../tommy-client";
 

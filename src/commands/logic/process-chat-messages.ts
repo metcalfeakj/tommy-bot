@@ -17,8 +17,15 @@ const processChatMessage = async (chatMessage: ChatMessages, client: TommyClient
         });
         const { choices } = response.data || { choices: [] };
         const generatedMessage = choices[0].message?.content;
-        chatMessage.addMessage('assistant', generatedMessage || 'Error retreiving response.');
+        if ((generatedMessage) && generatedMessage !== ''){
+            chatMessage.addMessage('assistant', generatedMessage);
         res = generatedMessage?.slice(0, 1999) || "Error retreiving response.";
+        }
+        else {
+            res = 'Error retreiving response.';
+            chatMessage.addMessage('assistant', 'Error retreiving response.');
+        }
+        
         
 
     } catch { } finally { //na

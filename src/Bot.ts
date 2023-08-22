@@ -54,7 +54,7 @@ async function main() {
   TommyClient.initialize({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
     intents: [GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildModeration, GatewayIntentBits.GuildMembers]
-  }, config, connection, new ChatMessagesCollection(chatMessagesConfigs), openai, lastRunExecutionDate);
+  }, config, connection, new ChatMessagesCollection(chatMessagesConfigs), openai, lastRunExecutionDate, 0, '');
 
   // Grab singleton
   const client = TommyClient.getInstance();

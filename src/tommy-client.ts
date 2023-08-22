@@ -9,6 +9,8 @@ class TommyClient extends Client {
     database: Sequelize;
     openai: OpenAIApi;
     lastRunExecutionDate: Date;
+    counter: number;
+    lastCounterAuthor: string;
 
     // Step 1: Create a private property
     private _chatMessagesCollection: ChatMessagesCollection;
@@ -34,7 +36,9 @@ class TommyClient extends Client {
         database: Sequelize,
         chatMessagesCollection: ChatMessagesCollection,
         openai: OpenAIApi,
-        lastRunExecutionDate: Date
+        lastRunExecutionDate: Date,
+        counter: number,
+        lastCounterAuthor: string
     ) {
         super(clientOptions); // Pass the clientOptions to the base class constructor
         this.config = config;
@@ -42,6 +46,8 @@ class TommyClient extends Client {
         this._chatMessagesCollection = chatMessagesCollection;
         this.openai = openai;
         this.lastRunExecutionDate = lastRunExecutionDate;
+        this.counter = counter;
+        this.lastCounterAuthor = lastCounterAuthor;
     }
 
     public static initialize(
@@ -50,10 +56,12 @@ class TommyClient extends Client {
         database: Sequelize,
         chatMessagesCollection: ChatMessagesCollection,
         openai: OpenAIApi,
-        lastRunExecutionDate: Date
+        lastRunExecutionDate: Date,
+        counter: number,
+        lastCounterAuthor: string
     ) {
         if (!this.instance) {
-            this.instance = new TommyClient(clientOptions, config, database, chatMessagesCollection, openai, lastRunExecutionDate);
+            this.instance = new TommyClient(clientOptions, config, database, chatMessagesCollection, openai, lastRunExecutionDate, counter, lastCounterAuthor);
         }
     }
 

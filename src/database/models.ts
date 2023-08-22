@@ -105,5 +105,27 @@ class ChannelConfigsTable extends Model {
   declare sentient: boolean;
 }
 
+@Table({
+  timestamps: true,
+  tableName: "HighScores",
+  charset: 'utf8mb4',
+  collate: 'utf8mb4_unicode_ci'
+})
+class HighScoresTable extends Model {
 
-export { CassetteTapeTable, ChannelConfigsTable}
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    primaryKey: true,
+  })
+  declare AuthorId: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: true,
+  })
+  declare score: number;
+}
+
+
+export { CassetteTapeTable, ChannelConfigsTable, HighScoresTable}
